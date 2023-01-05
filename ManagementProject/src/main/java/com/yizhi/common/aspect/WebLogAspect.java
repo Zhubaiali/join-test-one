@@ -10,12 +10,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.yizhi.common.utils.HttpContextUtils;
 
-import sun.net.util.IPAddressUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
+
 import java.util.Arrays;
 
 @Aspect
