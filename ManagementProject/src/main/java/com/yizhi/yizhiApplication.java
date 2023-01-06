@@ -16,13 +16,13 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-@EnableAutoConfiguration(exclude = {
-        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class
-})
+//@EnableAutoConfiguration
 @EnableTransactionManagement
 @ServletComponentScan
 @MapperScan("com.yizhi.*.dao")
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class
+})
 @EnableCaching
 @EnableAsync
 public class yizhiApplication extends SpringBootServletInitializer{
