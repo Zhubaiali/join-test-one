@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import com.yizhi.student.domain.StudentInfoDO;
 import com.yizhi.student.service.StudentInfoService;
 
+import static com.yizhi.common.utils.ShiroUtils.getUserId;
+
 /**
  * 生基础信息表
  */
@@ -44,6 +46,11 @@ public class StudentInfoController {
 	@PostMapping("/save")
 	@RequiresPermissions("student:studentInfo:add")
 	public R save(StudentInfoDO studentInfoDO){
+		//获得当前时间
+		Date date = new Date();
+		studentInfoDO.setEditTime(date);
+		//获取当前用户id
+		studentInfoDO.setAddUserid(getUserId().intValue());
 		if(studentInfoService.save(studentInfoDO)>0){
 			return R.ok();
 		}
@@ -74,7 +81,11 @@ public class StudentInfoController {
 	@PostMapping("/update")
 	@RequiresPermissions("student:studentInfo:edit")
 	public R update(StudentInfoDO studentInfo){
-
+		//获得当前时间
+		Date date = new Date();
+		studentInfo.setEditTime(date);
+		//获取当前用户id
+		studentInfo.setAddUserid(getUserId().intValue());
 		studentInfoService.update(studentInfo);
 		return R.ok();
 	}
