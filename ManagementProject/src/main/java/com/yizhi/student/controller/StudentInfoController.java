@@ -1,29 +1,21 @@
 package com.yizhi.student.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yizhi.common.annotation.Log;
-import com.yizhi.common.controller.BaseController;
-import com.yizhi.common.utils.*;
-import com.yizhi.student.domain.ClassDO;
-import com.yizhi.student.service.ClassService;
-import com.yizhi.student.service.CollegeService;
-import com.yizhi.student.service.MajorService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
+import com.yizhi.common.utils.BeanHump;
+import com.yizhi.common.utils.PageUtils;
+import com.yizhi.common.utils.Query;
+import com.yizhi.common.utils.R;
 import com.yizhi.student.domain.StudentInfoDO;
 import com.yizhi.student.service.StudentInfoService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.yizhi.common.utils.ShiroUtils.getUserId;
 
@@ -65,10 +57,14 @@ public class StudentInfoController {
 	@RequiresPermissions("student:studentInfo:studentInfo")
 	public PageUtils list(@RequestParam Map<String, Object> params){
 		//查询列表数据
+		if (params.get("sort")!=null) {
+			params.put("sort", BeanHump.camelToUnderline(params.get("sort").toString()));
+		}
+		//查询列表数据
 		Query query = new Query(params);
-		List<StudentInfoDO> studentInfoList = studentInfoService.list(query);
+		List<StudentInfoDO> studentInfoDOList = studentInfoService.list(query);
 		int total = studentInfoService.count(query);
-		PageUtils pageUtils = new PageUtils(studentInfoList, total);
+		PageUtils pageUtils = new PageUtils(studentInfoDOList, total,query.getCurrPage(),query.getPageSize());
 		return pageUtils;
 	}
 

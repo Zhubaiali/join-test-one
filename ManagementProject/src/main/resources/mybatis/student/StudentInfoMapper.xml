@@ -2,11 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.yizhi.student.dao.StudentInfoDao">
+
     <sql id="StudentInfoColumns">
-        a
-        .
-        id
-        ,
+        a.id,
 		  a.student_id,
 		  a.exam_id,
 		  a.class_id,
@@ -21,8 +19,12 @@
 		  a.telephone,
 		  a.subject_type
     </sql>
+
+
     <sql id="StudentInfoJoins">
+
     </sql>
+
     <select id="get" resultType="com.yizhi.student.domain.StudentInfoDO">
         select
         <include refid="StudentInfoColumns"/>
@@ -37,11 +39,11 @@
         from s_student_info a
         <include refid="StudentInfoJoins"/>
         <where>
-            <if test="name != null and name != ''">and a.student_name LIKE CONCAT('%',#{name},'%')</if>
-            <if test="studenId != null and studenId != ''">and a.student_id = #{studenId}</if>
-            <if test="tocollegeId != null and tocollegeId != ''">and a.tocollege = #{tocollegeId}</if>
-            <if test="tomajorId != null and tomajorId != ''">and a.tomajor = #{tomajorId}</if>
-            <if test="classId != null and classId != ''">and a.class_id = #{classId}</if>
+            <if test="name != null and name != ''"> and a.student_name LIKE CONCAT('%',#{name},'%') </if>
+            <if test="studenId != null and studenId != ''"> and a.student_id = #{studenId} </if>
+            <if test="tocollegeId != null and tocollegeId != ''"> and a.tocollege = #{tocollegeId} </if>
+            <if test="tomajorId != null and tomajorId != ''"> and a.tomajor = #{tomajorId} </if>
+            <if test="classId != null and classId != ''"> and a.class_id = #{classId} </if>
         </where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
@@ -60,18 +62,19 @@
         select count(*) from s_student_info a
         <include refid="StudentInfoJoins"/>
         <where>
-            <if test="id != null and id != ''">and a.id = #{id}</if>
-            <if test="name != null and name != ''">and a.student_name LIKE CONCAT('%',#{name},'%')</if>
-            <if test="studenId != null and studenId != ''">and a.student_id = #{studenId}</if>
-            <if test="tocollegeId != null and tocollegeId != ''">and a.tocollege = #{tocollegeId}</if>
-            <if test="tomajorId != null and tomajorId != ''">and a.tomajor = #{tomajorId}</if>
-            <if test="classId != null and classId != ''">and a.class_id = #{classId}</if>
+            <if test="id != null and id != ''"> and a.id = #{id} </if>
+            <if test="name != null and name != ''"> and a.student_name LIKE CONCAT('%',#{name},'%') </if>
+            <if test="studenId != null and studenId != ''"> and a.student_id = #{studenId} </if>
+            <if test="tocollegeId != null and tocollegeId != ''"> and a.tocollege = #{tocollegeId} </if>
+            <if test="tomajorId != null and tomajorId != ''"> and a.tomajor = #{tomajorId} </if>
+            <if test="classId != null and classId != ''"> and a.class_id = #{classId} </if>
         </where>
     </select>
 
     <insert id="save" parameterType="com.yizhi.student.domain.StudentInfoDO" useGeneratedKeys="true" keyProperty="id">
         insert into s_student_info
-        ('student_id',
+        (
+            'student_id',
             'exam_id',
             'class_id',
             'student_name',
@@ -92,8 +95,11 @@
             'birthday',
             'note',
             'add_Time',
-            'add_userid')
-        values (#{studentId},
+            'add_userid'
+        )
+        values
+            (
+                #{studentId},
                 #{examId},
                 #{classId},
                 #{studentName},
@@ -114,41 +120,40 @@
                 #{birthday},
                 #{note},
                 #{addTime},
-                #{addUserid})
+                #{addUserid}
+            )
     </insert>
+
     <update id="update" parameterType="com.yizhi.student.domain.StudentInfoDO">
         update s_student_info
         <set>
-            <if test="studentId != null and studentId != ''">student_id = #{studentId},</if>
-            <if test="examId != null and examId != ''">exam_id = #{examId},</if>
-            <if test="classId != null and classId != ''">class_id = #{classId},</if>
-            <if test="studentName != null and studentName != ''">student_name = #{studentName},</if>
-            <if test="certify != null and certify != ''">certify = #{certify},</if>
-            <if test="mailAddress != null and mailAddress != ''">mail_address = #{mailAddress},</if>
-            <if test="foreignLanaguage != null and foreignLanaguage != ''">foreign_lanaguage = #{foreignLanaguage},</if>
-            <if test="studentSex != null and studentSex != ''">student_sex = #{studentSex},</if>
-            <if test="nation != null and nation != ''">nation = #{nation},</if>
-            <if test="political != null and political != ''">political = #{political},</if>
-            <if test="cardId != null and cardId != ''">card_id = #{cardId},</if>
-            <if test="telephone != null and telephone != ''">telephone = #{telephone},</if>
-            <if test="subjectType != null and subjectType != ''">subject_type = #{subjectType},</if>
-            <if test="tocollege != null and tocollege != ''">tocollege = #{tocollege},</if>
-            <if test="tocampus != null and tocampus != ''">tocampus = #{tocampus},</if>
-            <if test="tomajor != null and tomajor != ''">tomajor = #{tomajor},</if>
-            <if test="birthplace != null and birthplace != ''">birthplace = #{birthplace},</if>
-            <if test="grade != null and grade != ''">grade = #{grade},</if>
-            <if test="isstate != null and isstate != ''">isstate = #{isstate},</if>
-            <if test="birthday != null and birthday != ''">birthday = #{birthday},</if>
-            <if test="note != null and note != ''">note = #{note},</if>
-            <if test="addTime != null and addTime != ''">add_time = #{addTime},</if>
-            <if test="addUserid != null and addUserid != ''">add_userid = #{addUserid},</if>
+            <if test="student_id != null">`college_name` = #{student_id}, </if>
+            <if test="exam_id != null">`single_name` = #{exam_id}, </if>
+            <if test="class_id != null">`introduce` = #{class_id}, </if>
+            <if test="student_name != null">`college_num` = #{student_name}</if>
+            <if test="certify != null">`college_name` = #{certify}, </if>
+            <if test="mail_address != null">`single_name` = #{mail_address}, </if>
+            <if test="foreign_lanaguage != null">`introduce` = #{foreign_lanaguage}, </if>
+            <if test="student_sex != null">`college_num` = #{student_sex}</if>
+            <if test="nation != null">`college_name` = #{nation}, </if>
+            <if test="political != null">`single_name` = #{political}, </if>
+            <if test="card_id != null">`introduce` = #{card_id}, </if>
+            <if test="telephone != null">`college_num` = #{telephone}</if>
+            <if test="subject_type != null">`college_name` = #{subject_type}, </if>
+            <if test="tocollege != null">`single_name` = #{tocollege}, </if>
+            <if test="birthplace != null">`introduce` = #{birthplace}, </if>
+            <if test="grade != null">`college_num` = #{grade}</if>
+            <if test="isstate != null">`college_name` = #{isstate}, </if>
+            <if test="birthday != null">`single_name` = #{birthday}, </if>
+            <if test="note != null">`introduce` = #{note}, </if>
+            <if test="addTime != null">`college_num` = #{addTime}</if>
+            <if test="addUserid != null">`college_num` = #{add_userid}</if>
         </set>
         where id = #{id}
     </update>
-    <delete id="remove" parameterType="int">
-        delete
-        from s_student_info
-        where id = #{value}
+
+    <delete id="remove">
+        delete from s_student_info where id = #{value}
     </delete>
 
     <delete id="batchRemove">
@@ -157,5 +162,6 @@
             #{id}
         </foreach>
     </delete>
+
 
 </mapper>
