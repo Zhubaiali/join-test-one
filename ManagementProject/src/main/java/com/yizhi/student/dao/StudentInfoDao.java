@@ -30,5 +30,6 @@ public interface StudentInfoDao {
 	int remove(Integer id);
 	
 	int batchRemove(Integer[] ids);
+
 	List<Integer> selectList();
 }

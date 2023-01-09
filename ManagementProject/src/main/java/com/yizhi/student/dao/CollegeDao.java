@@ -17,7 +17,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CollegeDao {
 
 	CollegeDO get(Integer id);
-	List<Integer> getIds();
+	
 	List<CollegeDO> list(Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
@@ -30,4 +30,5 @@ public interface CollegeDao {
 	
 	int batchRemove(Integer[] ids);
 
+	List<Integer> getIds();
 }

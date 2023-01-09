@@ -1,27 +1,34 @@
 package com.yizhi.student.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yizhi.common.annotation.Log;
-import com.yizhi.common.utils.PageUtils;
-import com.yizhi.common.utils.Query;
-import com.yizhi.common.utils.R;
-import com.yizhi.student.domain.StudentInfoDO;
-import com.yizhi.student.service.StudentInfoService;
+import com.yizhi.common.controller.BaseController;
+import com.yizhi.common.utils.*;
+import com.yizhi.student.domain.ClassDO;
+import com.yizhi.student.service.ClassService;
+import com.yizhi.student.service.CollegeService;
+import com.yizhi.student.service.MajorService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import com.yizhi.student.domain.StudentInfoDO;
+import com.yizhi.student.service.StudentInfoService;
+
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 生基础信息表
  */
-
+ 
 @Controller
 @RequestMapping("/student/studentInfo")
 public class StudentInfoController {
@@ -29,6 +36,7 @@ public class StudentInfoController {
 	@Autowired
 	private StudentInfoService studentInfoService;
 
+    //
 	@Log("学生信息保存")
 	@ResponseBody
 	@PostMapping("/save")
@@ -57,9 +65,11 @@ public class StudentInfoController {
 	@RequiresPermissions("student:studentInfo:studentInfo")
 	public PageUtils list(@RequestParam Map<String, Object> params){
 		Object collegeid = params.get("collegeid");
-		if(collegeid != null){
+		if(collegeid != null){//前端传的数据不一致，页面为tocollegeId，后台测试collegeid
 			params.put("tocollegeId",collegeid);
 		}
+		//查询列表数据
+		System.out.println("params：" + params);
 		Query query = new Query(params);
 		List<StudentInfoDO> studentList = studentInfoService.list(query);
 		int total = studentInfoService.count(query);
@@ -105,7 +115,7 @@ public class StudentInfoController {
 		}
 		return R.error();
 	}
-
+	
 	/**
 	 * 批量删除
 	 */
@@ -149,6 +159,7 @@ public class StudentInfoController {
 	@GetMapping("/add")
 	@RequiresPermissions("student:studentInfo:add")
 	String add(){
-		return "student/studentInfo/add";
+	    return "student/studentInfo/add";
 	}
-}
+
+}//end class
