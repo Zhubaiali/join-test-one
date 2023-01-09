@@ -3,165 +3,90 @@
 
 <mapper namespace="com.yizhi.student.dao.StudentInfoDao">
 
-    <sql id="StudentInfoColumns">
-        a.id,
-		  a.student_id,
-		  a.exam_id,
-		  a.class_id,
-		  a.student_name,
-		  a.certify,
-		  a.mail_address,
-		  a.foreign_lanaguage,
-		  a.student_sex,
-		  a.nation,
-		  a.political,
-		  a.card_id,
-		  a.telephone,
-		  a.subject_type
-    </sql>
+    <insert id="save">
+        insert into `s_student_info` (student_id, exam_id, class_id, student_name, certify,mail_address, foreign_lanaguage, student_sex, nation, political,card_id, telephone, subject_type, tocollege, tocampus,tomajor, birthplace, grade, birthday, note, add_Time, add_userid)
+        values (#{studentId}, #{examId}, #{classId}, #{studentName}, #{certify}, #{mailAddress}, #{foreignLanaguage}, #{studentSex}, #{nation}, #{political}, #{cardId}, #{telephone}, #{subjectType}, #{tocollege}, #{tocampus},#{tomajor}, #{birthplace}, #{grade}, #{birthday}, #{note}, #{addTime}, #{addUserid})
+    </insert>
 
+    <update id="update">
+        update `s_student_info`
+        set student_id        = #{studentId},
+            exam_id           = #{examId},
+            class_id          = #{classId},
+            student_name      = #{studentName},
+            certify           = #{certify},
+            mail_address      = #{mailAddress},
+            foreign_lanaguage = #{foreignLanaguage},
+            student_sex       = #{studentSex},
+            nation            = #{nation},
+            political         = #{political},
+            card_id           = #{cardId},
+            telephone         = #{telephone},
+            subject_type      = #{subjectType},
+            tocollege         = #{tocollege},
+            tocampus          = #{tocampus},
+            tomajor           = #{tomajor},
+            birthplace        = #{birthplace},
+            grade             = #{grade},
+            isstate           = #{isstate},
+            birthday          = #{birthday},
+            note              = #{note},
+            edit_time         = #{editTime}
+        where id = #{id}
+    </update>
 
-    <sql id="StudentInfoJoins">
+    <!--根据id删除数据-->
+    <delete id="remove">
+        delete
+        from `s_student_info`
+        where id = #{id}
+    </delete>
 
-    </sql>
+    <!--批量删除-->
+    <delete id="batchRemove">
+        delete from `s_student_info` where id in
+        <foreach collection="array" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 
+    <!--根据id查询-->
     <select id="get" resultType="com.yizhi.student.domain.StudentInfoDO">
-        select
-        <include refid="StudentInfoColumns"/>
-        from s_student_info a
-        <include refid="StudentInfoJoins"/>
-        where a.id = #{value}
+        select *
+        from `s_student_info`
+        where id = #{id}
     </select>
 
-    <select id="list" resultType="com.yizhi.student.domain.StudentInfoDO">
-        select
-        <include refid="StudentInfoColumns"/>
-        from s_student_info a
-        <include refid="StudentInfoJoins"/>
+    <!--分页查询-->
+    <select id="list" resultType="com.yizhi.student.domain.StudentInfoDO" parameterType="map">
+        select *
+        from `s_student_info`
         <where>
-            <if test="name != null and name != ''"> and a.student_name LIKE CONCAT('%',#{name},'%') </if>
-            <if test="studenId != null and studenId != ''"> and a.student_id = #{studenId} </if>
-            <if test="tocollegeId != null and tocollegeId != ''"> and a.tocollege = #{tocollegeId} </if>
-            <if test="tomajorId != null and tomajorId != ''"> and a.tomajor = #{tomajorId} </if>
-            <if test="classId != null and classId != ''"> and a.class_id = #{classId} </if>
+            <if test="name != null and name != ''">and student_name LIKE CONCAT('%',#{name},'%')</if>
+            <if test="tocollegeId != null and tocollegeId != ''">and tocollege = #{tocollegeId}</if>
+            <if test="tomajorId != null and tomajorId != ''">and tomajor = #{tomajorId}</if>
+            <if test="classId != null and classId != ''">and class_id = #{classId}</if>
         </where>
-        <choose>
-            <when test="sort != null and sort.trim() != ''">
-                order by ${sort} ${order}
-            </when>
-            <otherwise>
-                order by a.id desc
-            </otherwise>
-        </choose>
         <if test="offset != null and limit != null">
             limit #{offset}, #{limit}
         </if>
     </select>
 
-    <select id="count" resultType="int">
-        select count(*) from s_student_info a
-        <include refid="StudentInfoJoins"/>
+    <select id="count" resultType="java.lang.Integer" parameterType="map">
+        select COUNT(*)
+        from `s_student_info`
         <where>
-            <if test="id != null and id != ''"> and a.id = #{id} </if>
-            <if test="name != null and name != ''"> and a.student_name LIKE CONCAT('%',#{name},'%') </if>
-            <if test="studenId != null and studenId != ''"> and a.student_id = #{studenId} </if>
-            <if test="tocollegeId != null and tocollegeId != ''"> and a.tocollege = #{tocollegeId} </if>
-            <if test="tomajorId != null and tomajorId != ''"> and a.tomajor = #{tomajorId} </if>
-            <if test="classId != null and classId != ''"> and a.class_id = #{classId} </if>
+            <if test="name != null and name != ''">and student_name LIKE CONCAT('%',#{name},'%')</if>
+            <if test="tocollegeId != null and tocollegeId != ''">and tocollege = #{tocollegeId}</if>
+            <if test="tomajorId != null and tomajorId != ''">and tomajor = #{tomajorId}</if>
+            <if test="classId != null and classId != ''">and class_id = #{classId}</if>
         </where>
     </select>
 
-    <insert id="save" parameterType="com.yizhi.student.domain.StudentInfoDO" useGeneratedKeys="true" keyProperty="id">
-        insert into s_student_info
-        (
-            'student_id',
-            'exam_id',
-            'class_id',
-            'student_name',
-            'certify',
-            'mail_address',
-            'foreign_lanaguage',
-            'student_sex',
-            'nation',
-            'political',
-            'card_id',
-            'telephone',
-            'subject_type',
-            'tocollege',
-            'tomajor',
-            'birthplace',
-            'grade',
-            'isstate',
-            'birthday',
-            'note',
-            'add_Time',
-            'add_userid'
-        )
-        values
-            (
-                #{studentId},
-                #{examId},
-                #{classId},
-                #{studentName},
-                #{certify},
-                #{mailAddress},
-                #{foreignLanaguage},
-                #{studentSex},
-                #{nation},
-                #{political},
-                #{cardId},
-                #{telephone},
-                #{subjectType},
-                #{tocollege},
-                #{tomajor},
-                #{birthplace},
-                #{grade},
-                #{isstate},
-                #{birthday},
-                #{note},
-                #{addTime},
-                #{addUserid}
-            )
-    </insert>
-
-    <update id="update" parameterType="com.yizhi.student.domain.StudentInfoDO">
-        update s_student_info
-        <set>
-            <if test="student_id != null">`college_name` = #{student_id}, </if>
-            <if test="exam_id != null">`single_name` = #{exam_id}, </if>
-            <if test="class_id != null">`introduce` = #{class_id}, </if>
-            <if test="student_name != null">`college_num` = #{student_name}</if>
-            <if test="certify != null">`college_name` = #{certify}, </if>
-            <if test="mail_address != null">`single_name` = #{mail_address}, </if>
-            <if test="foreign_lanaguage != null">`introduce` = #{foreign_lanaguage}, </if>
-            <if test="student_sex != null">`college_num` = #{student_sex}</if>
-            <if test="nation != null">`college_name` = #{nation}, </if>
-            <if test="political != null">`single_name` = #{political}, </if>
-            <if test="card_id != null">`introduce` = #{card_id}, </if>
-            <if test="telephone != null">`college_num` = #{telephone}</if>
-            <if test="subject_type != null">`college_name` = #{subject_type}, </if>
-            <if test="tocollege != null">`single_name` = #{tocollege}, </if>
-            <if test="birthplace != null">`introduce` = #{birthplace}, </if>
-            <if test="grade != null">`college_num` = #{grade}</if>
-            <if test="isstate != null">`college_name` = #{isstate}, </if>
-            <if test="birthday != null">`single_name` = #{birthday}, </if>
-            <if test="note != null">`introduce` = #{note}, </if>
-            <if test="addTime != null">`college_num` = #{addTime}</if>
-            <if test="addUserid != null">`college_num` = #{add_userid}</if>
-        </set>
-        where id = #{id}
-    </update>
-
-    <delete id="remove">
-        delete from s_student_info where id = #{value}
-    </delete>
-
-    <delete id="batchRemove">
-        delete from s_student_info where id in
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </delete>
+    <select id="selectList" resultType="java.lang.Integer">
+        select id
+        from `s_student_info`
+    </select>
 
 
 </mapper>
