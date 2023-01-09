@@ -3,12 +3,16 @@ package com.yizhi.student.service.impl;
 import com.yizhi.student.dao.ClassDao;
 import com.yizhi.student.dao.CollegeDao;
 import com.yizhi.student.dao.MajorDao;
+import com.yizhi.student.domain.ClassDO;
+import com.yizhi.student.domain.CollegeDO;
+import com.yizhi.student.domain.MajorDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.yizhi.student.dao.StudentInfoDao;
 import com.yizhi.student.domain.StudentInfoDO;
@@ -51,44 +55,16 @@ public class StudentInfoServiceImpl implements StudentInfoService {
 
 	@Override
 	public int save(StudentInfoDO studentInfo){
-		List<Integer> classIds = classDao.getIds();
-		List<Integer> collegeIds = collegeDao.getIds();
-		List<Integer> majorIds = majorDao.getIds();
-
-		if (!classIds.contains(studentInfo.getClassId())) {
-			throw new RuntimeException("Invalid classId");
-		}
-		if (!collegeIds.contains(studentInfo.getTocollege())) {
-			throw new RuntimeException("Invalid collegeId");
-		}
-		if (!majorIds.contains(studentInfo.getTomajor())) {
-			throw new RuntimeException("Invalid tomajorId");
-		}
+		verify(studentInfo);
 
 		studentInfo.setAddTime(new Date());
 		studentInfo.setAddUserid(studentInfo.getAddUserid());
 		return studentInfoDao.save(studentInfo);
 	}
-	
+
 	@Override
 	public int update(StudentInfoDO studentInfo){
-		List<Integer> classIds = classDao.getIds();
-		List<Integer> collegeIds = collegeDao.getIds();
-		List<Integer> majorIds = majorDao.getIds();
-
-		Integer classId = studentInfo.getClassId();
-		Integer collegeId = studentInfo.getTocollege();
-		Integer tomajorId = studentInfo.getTomajor();
-
-		if (!classIds.contains(studentInfo.getClassId())) {
-			throw new RuntimeException("Invalid classId");
-		}
-		if (!collegeIds.contains(studentInfo.getTocollege())) {
-			throw new RuntimeException("Invalid collegeId");
-		}
-		if (!majorIds.contains(studentInfo.getTomajor())) {
-			throw new RuntimeException("Invalid tomajorId");
-		}
+		verify(studentInfo);
 
 		studentInfo.setEditTime(new Date());
 		return studentInfoDao.update(studentInfo);
@@ -117,5 +93,32 @@ public class StudentInfoServiceImpl implements StudentInfoService {
 			}
 		}
 		return studentInfoDao.batchRemove(ids);
+	}
+	private void isValid(Integer id, List<Integer> ids) {
+		boolean flag = true;
+		for (Integer i : ids) {
+			flag = false;
+			if (i.equals(id)) {
+				flag = true;
+				break;
+			}
+		}
+		if (flag == false) {
+			throw new RuntimeException();
+		}
+	}
+
+	//提取校验方法
+	private void verify(StudentInfoDO studentInfo) {
+		List<Integer> classes = classDao.getIds();
+		List<Integer> colleges = collegeDao.getIds();
+		List<Integer> majors = majorDao.getIds();
+
+		Integer classId = studentInfo.getClassId();
+		Integer collegeId = studentInfo.getTocollege();
+		Integer tomajorId = studentInfo.getTomajor();
+		isValid( classId,classes);
+		isValid( collegeId,colleges);
+		isValid( tomajorId,majors);
 	}
 }
