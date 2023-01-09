@@ -151,5 +151,4 @@ public class StudentInfoController {
 	String add(){
 		return "student/studentInfo/add";
 	}
-
-}//end class
+}
