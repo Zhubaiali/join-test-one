@@ -1,49 +1,54 @@
 package com.yizhi.student.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yizhi.common.annotation.Log;
-import com.yizhi.common.controller.BaseController;
-import com.yizhi.common.utils.*;
-import com.yizhi.student.domain.ClassDO;
-import com.yizhi.student.service.ClassService;
-import com.yizhi.student.service.CollegeService;
-import com.yizhi.student.service.MajorService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
+import com.yizhi.common.utils.PageUtils;
+import com.yizhi.common.utils.Query;
+import com.yizhi.common.utils.R;
 import com.yizhi.student.domain.StudentInfoDO;
 import com.yizhi.student.service.StudentInfoService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 生基础信息表
  */
- 
+
 @Controller
 @RequestMapping("/student/studentInfo")
 public class StudentInfoController {
+
 	@Autowired
 	private StudentInfoService studentInfoService;
-    //
+
 	@Log("学生信息保存")
 	@ResponseBody
 	@PostMapping("/save")
 	@RequiresPermissions("student:studentInfo:add")
-	public R save(StudentInfoDO studentInfoDO){
-		if(studentInfoService.save(studentInfoDO)>0){
-			return R.ok();
+
+	public R save(@Valid StudentInfoDO studentInfoDO){
+		String studentId = studentInfoDO.getStudentId();
+		if(studentId == null || studentId.equals("") || StringUtils.isEmpty(studentId) || studentId.equals(" ")){
+			return R.error();
 		}
-		return R.error();
+		try {
+			int save = studentInfoService.save(studentInfoDO);
+			if (save < 0) {
+				throw new RuntimeException();
+			}
+		} catch (Exception e) {
+			return R.error();
+		}
+		return R.ok();
+
 	}
 
 	/**
@@ -53,11 +58,20 @@ public class StudentInfoController {
 	@GetMapping("/list")
 	@RequiresPermissions("student:studentInfo:studentInfo")
 	public PageUtils list(@RequestParam Map<String, Object> params){
-		//查询列表数据
+
+		Object collegeid = params.get("collegeid");
+		if(collegeid != null){
+			params.put("tocollegeId",collegeid);
+		}
 		Query query = new Query(params);
-		List<StudentInfoDO> studentInfoList = studentInfoService.list(query);
+		List<StudentInfoDO> studentList = studentInfoService.list(query);
 		int total = studentInfoService.count(query);
-		PageUtils pageUtils = new PageUtils(studentInfoList, total);
+		PageUtils pageUtils = new PageUtils(studentList, total, query.getCurrPage(), query.getPageSize());
+		if (pageUtils.getRows().size() == 0){
+			List<String> arrays = new ArrayList<>();
+			arrays.add("查询失败");
+			pageUtils.setRows(arrays);
+		}
 		return pageUtils;
 	}
 
@@ -68,9 +82,13 @@ public class StudentInfoController {
 	@ResponseBody
 	@PostMapping("/update")
 	@RequiresPermissions("student:studentInfo:edit")
-	public R update(StudentInfoDO studentInfo){
-		studentInfoService.update(studentInfo);
-		return R.ok();
+
+	public R update(@Valid StudentInfoDO studentInfo){
+		int update = studentInfoService.update(studentInfo);
+		if (update > 0) {
+			return R.ok().put("studentInfo",studentInfo);
+		}
+		return R.error();
 	}
 
 	/**
@@ -80,12 +98,17 @@ public class StudentInfoController {
 	@PostMapping( "/remove")
 	@ResponseBody
 	@RequiresPermissions("student:studentInfo:remove")
-	public R remove( Integer id){
-		if(studentInfoService.remove(id)>0){
+	public R remove(Integer id){
+		if(id == null){
+			return R.error();
+		}
+		int remove = studentInfoService.remove(id);
+		if (remove > 0) {
 			return R.ok();
 		}
 		return R.error();
 	}
+
 	/**
 	 * 批量删除
 	 */
@@ -94,8 +117,12 @@ public class StudentInfoController {
 	@ResponseBody
 	@RequiresPermissions("student:studentInfo:batchRemove")
 	public R remove(@RequestParam("ids[]") Integer[] ids){
-		studentInfoService.batchRemove(ids);
-		return R.ok();
+		int i = studentInfoService.batchRemove(ids);
+		if (i > 0) {
+			return R.ok();
+		}
+		return R.error();
+
 	}
 
 	//前后端不分离 客户端 -> 控制器-> 定位视图
@@ -125,7 +152,6 @@ public class StudentInfoController {
 	@GetMapping("/add")
 	@RequiresPermissions("student:studentInfo:add")
 	String add(){
-	    return "student/studentInfo/add";
+		return "student/studentInfo/add";
 	}
-	
-}//end class
+}

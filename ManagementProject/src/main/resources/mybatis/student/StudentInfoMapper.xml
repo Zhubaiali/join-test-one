@@ -2,43 +2,92 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.yizhi.student.dao.StudentInfoDao">
-    <!-- 查询单个学生信息 -->
-    <select id="get" resultType="StudentInfoDO">
-        SELECT *
-        FROM student_info
-        WHERE id = #{id}
-    </select>
-    <!-- 查询多个学生信息 -->
-    <select id="list" resultType="StudentInfoDO">
-        SELECT * FROM student_info
-        <where>
-            <if test="id != null">
-                AND id = #{id}
-            </if>
-            <if test="name != null">
-                AND name = #{name}
-            </if>
-            <!-- 其他查询条件 -->
-        </where>
-    </select>
-    <!-- 统计学生数量 -->
-    <select id="count" resultType="int">
-        SELECT COUNT(*) FROM student_info
-        <where>
-            <if test="id != null">
-                AND id = #{id}
-            </if>
-            <if test="name != null">
-                AND name = #{name}
-            </if>
-            <!-- 其他查询条件 -->
-        </where>
-    </select>
-    <!-- 保存学生信息 -->
-    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="StudentInfoDO">
-        INSERT INTO student_info (name, gender, age, address)
-        VALUES (#{name}, #{gender}, #{age}, #{address})
+
+
+    <insert id="save">
+        insert into `s_student_info` (student_id, exam_id, class_id, student_name, certify,mail_address, foreign_lanaguage, student_sex, nation, political,card_id, telephone, subject_type, tocollege, tocampus,tomajor, birthplace, grade, birthday, note, add_Time, add_userid)
+        values (#{studentId}, #{examId}, #{classId}, #{studentName}, #{certify}, #{mailAddress}, #{foreignLanaguage}, #{studentSex}, #{nation}, #{political}, #{cardId}, #{telephone}, #{subjectType}, #{tocollege}, #{tocampus},#{tomajor}, #{birthplace}, #{grade}, #{birthday}, #{note}, #{addTime}, #{addUserid})
     </insert>
+
+    <update id="update">
+        update `s_student_info`
+        set student_id        = #{studentId},
+            exam_id           = #{examId},
+            class_id          = #{classId},
+            student_name      = #{studentName},
+            certify           = #{certify},
+            mail_address      = #{mailAddress},
+            foreign_lanaguage = #{foreignLanaguage},
+            student_sex       = #{studentSex},
+            nation            = #{nation},
+            political         = #{political},
+            card_id           = #{cardId},
+            telephone         = #{telephone},
+            subject_type      = #{subjectType},
+            tocollege         = #{tocollege},
+            tocampus          = #{tocampus},
+            tomajor           = #{tomajor},
+            birthplace        = #{birthplace},
+            grade             = #{grade},
+            isstate           = #{isstate},
+            birthday          = #{birthday},
+            note              = #{note},
+            edit_time         = #{editTime}
+        where id = #{id}
+    </update>
+
+    <!--根据id删除数据-->
+    <delete id="remove">
+        delete
+        from `s_student_info`
+        where id = #{id}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="batchRemove">
+        delete from `s_student_info` where id in
+        <foreach collection="array" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--根据id查询-->
+    <select id="get" resultType="com.yizhi.student.domain.StudentInfoDO">
+        select *
+        from `s_student_info`
+        where id = #{id}
+    </select>
+
+    <!--分页查询-->
+    <select id="list" resultType="com.yizhi.student.domain.StudentInfoDO" parameterType="map">
+        select *
+        from `s_student_info`
+        <where>
+            <if test="name != null and name != ''">and student_name LIKE CONCAT('%',#{name},'%')</if>
+            <if test="tocollegeId != null and tocollegeId != ''">and tocollege = #{tocollegeId}</if>
+            <if test="tomajorId != null and tomajorId != ''">and tomajor = #{tomajorId}</if>
+            <if test="classId != null and classId != ''">and class_id = #{classId}</if>
+        </where>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="java.lang.Integer" parameterType="map">
+        select COUNT(*)
+        from `s_student_info`
+        <where>
+            <if test="name != null and name != ''">and student_name LIKE CONCAT('%',#{name},'%')</if>
+            <if test="tocollegeId != null and tocollegeId != ''">and tocollege = #{tocollegeId}</if>
+            <if test="tomajorId != null and tomajorId != ''">and tomajor = #{tomajorId}</if>
+            <if test="classId != null and classId != ''">and class_id = #{classId}</if>
+        </where>
+    </select>
+
+    <select id="selectList" resultType="java.lang.Integer">
+        select id
+        from `s_student_info`
+    </select>
 
     <!-- 更新学生信息 -->
     <update id="update" parameterType="StudentInfoDO">

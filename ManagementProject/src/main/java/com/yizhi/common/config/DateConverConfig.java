@@ -32,13 +32,14 @@ public class DateConverConfig {
                         date = sdfday.parse((String) source);
                     } catch (ParseException e1) {
                         e1.printStackTrace();
+                        throw new RuntimeException();
                     }
                 }
                 return date;
             }
         };
     }
-    
+
     //设置了com.ibm.ws.webcontainer.invokeFlushAfterService为false
     /*
     @Bean    

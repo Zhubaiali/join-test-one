@@ -4,24 +4,28 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotNull;
 
 
 /**
  * 生基础信息表
- * 
+ *
  * @author dunhf
  * @email 499345515@qq.com
  * @date 2019-08-01 09:45:46
  */
 public class StudentInfoDO implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	//主键
 	private Integer id;
 	//学号
+	@NotNull
 	private String studentId;
+	//	@NotNull
+//	private String studentID;
 	//考生号
 	private String examId;
 	//所属班级
@@ -35,6 +39,7 @@ public class StudentInfoDO implements Serializable {
 	//外语语种
 	private String foreignLanaguage;
 	//性别
+	@Range(min = 0, max = 2)
 	private String studentSex;
 	//民族
 	private String nation;

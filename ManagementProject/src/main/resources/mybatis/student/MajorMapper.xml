@@ -107,5 +107,7 @@
 			#{id}
 		</foreach>
 	</delete>
-
+	<select id="getIds" resultType="java.lang.Integer">
+		select id from `sys_major`
+	</select>
 </mapper>
