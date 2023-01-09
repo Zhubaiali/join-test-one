@@ -6,34 +6,34 @@ import com.yizhi.common.utils.Query;
 import com.yizhi.common.utils.R;
 import com.yizhi.student.domain.StudentInfoDO;
 import com.yizhi.student.service.StudentInfoService;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.yizhi.common.utils.ShiroUtils.getUserId;
-
 /**
  * 生基础信息表
  */
- 
+
 @Controller
 @RequestMapping("/student/studentInfo")
 public class StudentInfoController {
+
 	@Autowired
 	private StudentInfoService studentInfoService;
-    //
+
 	@Log("学生信息保存")
 	@ResponseBody
 	@PostMapping("/save")
 	@RequiresPermissions("student:studentInfo:add")
-	public R save(StudentInfoDO studentInfoDO){
+	public R save(@Valid StudentInfoDO studentInfoDO){
 		String studentId = studentInfoDO.getStudentId();
 		if(studentId == null || studentId.equals("") || StringUtils.isEmpty(studentId) || studentId.equals(" ")){
 			return R.error();
@@ -60,8 +60,6 @@ public class StudentInfoController {
 		if(collegeid != null){
 			params.put("tocollegeId",collegeid);
 		}
-		//查询列表数据
-		System.out.println("params：" + params);
 		Query query = new Query(params);
 		List<StudentInfoDO> studentList = studentInfoService.list(query);
 		int total = studentInfoService.count(query);
@@ -82,7 +80,7 @@ public class StudentInfoController {
 	@ResponseBody
 	@PostMapping("/update")
 	@RequiresPermissions("student:studentInfo:edit")
-	public R update(StudentInfoDO studentInfo){
+	public R update(@Valid StudentInfoDO studentInfo){
 		int update = studentInfoService.update(studentInfo);
 		if (update > 0) {
 			return R.ok().put("studentInfo",studentInfo);
@@ -97,7 +95,7 @@ public class StudentInfoController {
 	@PostMapping( "/remove")
 	@ResponseBody
 	@RequiresPermissions("student:studentInfo:remove")
-	public R remove( Integer id){
+	public R remove(Integer id){
 		if(id == null){
 			return R.error();
 		}
@@ -107,7 +105,7 @@ public class StudentInfoController {
 		}
 		return R.error();
 	}
-	
+
 	/**
 	 * 批量删除
 	 */
@@ -151,7 +149,7 @@ public class StudentInfoController {
 	@GetMapping("/add")
 	@RequiresPermissions("student:studentInfo:add")
 	String add(){
-	    return "student/studentInfo/add";
+		return "student/studentInfo/add";
 	}
-	
+
 }//end class
