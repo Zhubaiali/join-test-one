@@ -32,6 +32,7 @@ public class DateConverConfig {
                         date = sdfday.parse((String) source);
                     } catch (ParseException e1) {
                         e1.printStackTrace();
+                        throw new RuntimeException();
                     }
                 }
                 return date;

@@ -1,7 +1,6 @@
 package com.yizhi.student.controller;
 
 import com.yizhi.common.annotation.Log;
-import com.yizhi.common.utils.BeanHump;
 import com.yizhi.common.utils.PageUtils;
 import com.yizhi.common.utils.Query;
 import com.yizhi.common.utils.R;
@@ -15,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +26,6 @@ import static com.yizhi.common.utils.ShiroUtils.getUserId;
 @Controller
 @RequestMapping("/student/studentInfo")
 public class StudentInfoController {
-
-	
-
-
 	@Autowired
 	private StudentInfoService studentInfoService;
     //
@@ -63,7 +57,7 @@ public class StudentInfoController {
 	@RequiresPermissions("student:studentInfo:studentInfo")
 	public PageUtils list(@RequestParam Map<String, Object> params){
 		Object collegeid = params.get("collegeid");
-		if(collegeid != null){//前端传的数据不一致，页面为tocollegeId，后台测试collegeid
+		if(collegeid != null){
 			params.put("tocollegeId",collegeid);
 		}
 		//查询列表数据
