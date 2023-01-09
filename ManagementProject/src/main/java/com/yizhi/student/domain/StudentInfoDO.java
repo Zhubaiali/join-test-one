@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
@@ -37,7 +38,7 @@ public class StudentInfoDO implements Serializable {
 	//外语语种
 	private String foreignLanaguage;
 	//性别
-	@NotNull
+	@Range(min = 0, max=2)
 	private String studentSex;
 	//民族
 	private String nation;
