@@ -30,7 +30,7 @@ public class StudentInfoServiceImpl implements StudentInfoService {
 
 	@Autowired
 	private MajorDao majorDao;
-	
+
 	@Override
 	public StudentInfoDO get(Integer id){
 		System.out.println("======service层中传递过来的id参数是：" + id + "======");
@@ -50,10 +50,8 @@ public class StudentInfoServiceImpl implements StudentInfoService {
 	public int count(Map<String, Object> map){
 		return studentInfoDao.count(map);
 	}
-	
 	@Override
 	public int save(StudentInfoDO studentInfo){
-
 		List<Integer> classIds = classDao.getIds();
 		List<Integer> collegeIds = collegeDao.getIds();
 		List<Integer> majorIds = majorDao.getIds();
@@ -61,16 +59,16 @@ public class StudentInfoServiceImpl implements StudentInfoService {
 		Integer classId = studentInfo.getClassId();
 		Integer collegeId = studentInfo.getTocollege();
 		Integer tomajorId = studentInfo.getTomajor();
-		isRightDate(classIds, classId);
-		isRightDate(collegeIds, collegeId);
-		isRightDate(majorIds, tomajorId);
+		checkDateExistence(classIds, classId, "班级");
+		checkDateExistence(collegeIds, collegeId, "学院");
+		checkDateExistence(majorIds, tomajorId, "专业");
 
 		studentInfo.setAddTime(new Date());
 		studentInfo.setAddUserid(studentInfo.getAddUserid());
 		return studentInfoDao.save(studentInfo);
 	}
 
-	
+
 	@Override
 	public int update(StudentInfoDO studentInfo){
 		List<Integer> classIds = classDao.getIds();
@@ -80,19 +78,19 @@ public class StudentInfoServiceImpl implements StudentInfoService {
 		Integer classId = studentInfo.getClassId();
 		Integer collegeId = studentInfo.getTocollege();
 		Integer tomajorId = studentInfo.getTomajor();
-		isRightDate(classIds, classId);
-		isRightDate(collegeIds, collegeId);
-		isRightDate(majorIds, tomajorId);
+		checkDateExistence(classIds, classId, "班级");
+		checkDateExistence(collegeIds, collegeId, "学院");
+		checkDateExistence(majorIds, tomajorId, "专业");
 
 		studentInfo.setEditTime(new Date());
 		return studentInfoDao.update(studentInfo);
 	}
-	
+
 	@Override
 	public int remove(Integer id){
 		return studentInfoDao.remove(id);
 	}
-	
+
 	@Override
 	public int batchRemove(Integer[] ids){
 
@@ -115,20 +113,17 @@ public class StudentInfoServiceImpl implements StudentInfoService {
 		return studentInfoDao.batchRemove(ids);
 	}
 
-	//抽取方法，用于class、college、major是否存在的判断
-	private void isRightDate(List<Integer> ids, Integer dateId) {
+	private void checkDateExistence(List<Integer> ids, Integer dateId, String dateType) {
 		boolean flag = true;
 		for (Integer id : ids) {
-			flag = false;
-			if (id == dateId) {
-				flag = true;//如果有相同的值就说明找到了
+			if (dateId.equals(id)) {
+				flag = false;
 				break;
 			}
 		}
-		if (flag == false) {
-			System.out.println("List<Integer> ids：" + ids);
-			System.out.println("dateId：" + dateId);
-			throw new RuntimeException("数据错误");
+		if (flag) {
+			throw new RuntimeException(dateType + "不存在");
 		}
 	}
+
 }

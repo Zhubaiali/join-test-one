@@ -19,7 +19,7 @@ public interface ClassDao {
 	ClassDO get(Integer id);
 	
 	List<ClassDO> list(Map<String,Object> map);
-	
+	List<Integer> getIds();
 	int count(Map<String,Object> map);
 	
 	int save(ClassDO classt);
@@ -29,6 +29,4 @@ public interface ClassDao {
 	int remove(Integer id);
 	
 	int batchRemove(Integer[] ids);
-
-    List<Integer> getIds();
 }

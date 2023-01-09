@@ -19,6 +19,7 @@ public interface MajorDao {
 	MajorDO get(Integer id);
 	
 	List<MajorDO> list(Map<String,Object> map);
+	List<Integer> getIds();
 	
 	int count(Map<String,Object> map);
 	
@@ -29,6 +30,4 @@ public interface MajorDao {
 	int remove(Integer id);
 	
 	int batchRemove(Integer[] ids);
-
-	List<Integer> getIds();
 }
